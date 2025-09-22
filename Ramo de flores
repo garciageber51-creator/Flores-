@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Flores Amarillas 🌼</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(skyblue, lightgreen);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-direction: column;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .mensaje {
+    position: absolute;
+    bottom: 40px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 5px black;
+  }
+</style>
+</head>
+<body>
+<canvas id="campo"></canvas>
+<div class="mensaje">
+  Quisiera poder darte estas flores en persona 🌼<br>
+  pero ojalá pueda hacerlo muy pronto mushasha guapa ❤️
+</div>
+
+<script>
+const canvas = document.getElementById("campo");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+class Flor {
+  constructor(x, y, size) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.angle = Math.random() * Math.PI * 2;
+    this.speed = 0.02 + Math.random() * 0.02;
+  }
+
+  dibujar() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(Math.sin(this.angle) * 0.2); // balanceo con viento
+
+    // pétalos
+    for (let i = 0; i < 8; i++) {
+      ctx.rotate(Math.PI / 4);
+      ctx.beginPath();
+      ctx.fillStyle = "yellow";
+      ctx.ellipse(this.size, 0, this.size / 2, this.size, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // centro café
+    ctx.beginPath();
+    ctx.fillStyle = "brown";
+    ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+
+    this.angle += this.speed;
+  }
+}
+
+// Crear ramo de flores
+let flores = [];
+const baseX = canvas.width / 2;
+const baseY = canvas.height / 2;
+for (let i = -2; i <= 2; i++) {
+  flores.push(new Flor(baseX + i * 70, baseY, 40));
+}
+
+// Dibujar tallo
+function tallo() {
+  ctx.beginPath();
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 8;
+  ctx.moveTo(baseX, baseY);
+  ctx.lineTo(baseX, baseY + 200);
+  ctx.stroke();
+}
+
+// Animación
+function animar() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  tallo();
+  flores.forEach(flor => flor.dibujar());
+  requestAnimationFrame(animar);
+}
+
+animar();
+</script>
+</body>
+</html>
